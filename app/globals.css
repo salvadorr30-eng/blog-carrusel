@@ -3,9 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --ink: #1a1a1a;
-  --paper: #fdfbf7;
-  --accent: #8b5a3c;
+  --ink: #1a1a2e;
+  --paper: #fafaf8;
+  --accent: #ff6534;
+  --sunshine: #ffd166;
+  --coral: #ef767a;
+  --teal: #06d6a0;
+  --violet: #9b5de5;
+  --sky: #4cc9f0;
 }
 
 html {
@@ -16,4 +21,16 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: "Inter", system-ui, sans-serif;
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #ff6534, #ffd166);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .bg-hero {
+    background: linear-gradient(135deg, #fff9f0 0%, #fdf0ff 50%, #f0f9ff 100%);
+  }
 }

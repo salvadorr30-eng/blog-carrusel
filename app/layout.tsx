@@ -28,24 +28,24 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="min-h-screen flex flex-col">
-        <header className="border-b border-ink/10">
-          <nav className="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
-            <Link href="/" className="font-serif text-xl font-bold">
-              Carrusel de Oportunidades
+        <header className="border-b border-ink/5 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+          <nav className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+            <Link href="/" className="font-serif text-xl font-bold text-gradient">
+              🎠 Carrusel de Oportunidades
             </Link>
-            <ul className="flex gap-6 text-sm">
+            <ul className="flex gap-6 text-sm font-medium items-center">
               <li>
-                <Link href="/libros" className="hover:text-accent">
+                <Link href="/libros" className="text-ink/70 hover:text-accent transition">
                   Libros
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="hover:text-accent">
+                <Link href="/blog" className="text-ink/70 hover:text-accent transition">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href="/newsletter" className="hover:text-accent">
+                <Link href="/newsletter" className="text-ink/70 hover:text-accent transition">
                   Newsletter
                 </Link>
               </li>
@@ -54,9 +54,9 @@ export default function RootLayout({
                   href="https://carruseldeoportunidades.es"
                   target="_blank"
                   rel="noopener"
-                  className="bg-accent text-white px-4 py-1.5 rounded-full hover:opacity-90"
+                  className="bg-accent text-white px-5 py-2 rounded-full hover:bg-orange-600 transition shadow-sm shadow-accent/30"
                 >
-                  Tienda
+                  Tienda →
                 </a>
               </li>
             </ul>
