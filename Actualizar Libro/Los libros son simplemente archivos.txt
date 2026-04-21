@@ -1,0 +1,30 @@
+Los libros son simplemente archivos MDX en content/libros/. Para editarlos tienes dos opciones:
+Opción 1 — Con cualquier editor de texto (más sencillo):
+Abre la carpeta C:\Users\Usuario\Desktop\Blog\content\libros\ y edita el archivo del libro que quieras con el Bloc de Notas, Notepad++ o VS Code.
+Opción 2 — Con VS Code (recomendado):
+Si tienes VS Code instalado, desde PowerShell:
+powershellcd "C:\Users\Usuario\Desktop\Blog"
+code .
+Esto abre todo el proyecto y puedes navegar y editar cualquier archivo cómodamente.
+Después de editar, siempre el mismo proceso:
+powershellgit
+
+add .
+git commit -m "actualizar: nombre del libro"
+git push
+
+
+Para cambiar la portada de un libro:
+
+Copia la nueva imagen a C:\Users\Usuario\Desktop\Blog\public\covers\
+Nómbrala igual que el slug del libro, por ejemplo el-ultimo-faro.jpg
+Luego en el archivo MDX del libro asegúrate de que la línea cover apunta a esa imagen:
+
+   cover: "/covers/el-ultimo-faro.jpg"
+
+Haz push:
+
+powershell   
+   git add .
+   git commit -m "actualizar portada: nombre del libro"
+   git push
