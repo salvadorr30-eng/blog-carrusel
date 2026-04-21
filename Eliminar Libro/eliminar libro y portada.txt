@@ -1,0 +1,6 @@
+cd "C:\Users\Usuario\Desktop\Blog"
+Remove-Item "content\libros\the-great-meerkat-family.mdx"
+git add .
+git commit -m "eliminar libro: The Great Meerkat Family"
+Remove-Item "public\covers\nombre-del-slug*.jpg"
+git push
