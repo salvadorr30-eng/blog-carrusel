@@ -2,6 +2,22 @@
   "name": "mi-blog-libros",
   "version": "0.1.0",
   "private": true,
+  "description": "Blog + catálogo de libros en Next.js 14 (App Router) con MDX, Tailwind, SEO y schema.org para libros. Pensado para desplegar en Vercel y enlazar la compra a una tienda Shopify.",
+  "homepage": "https://github.com/salvadorr30-eng/blog-carrusel#readme",
+  "bugs": {
+    "url": "https://github.com/salvadorr30-eng/blog-carrusel/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salvadorr30-eng/blog-carrusel.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "postcss.config.js",
+  "directories": {
+    "lib": "lib"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

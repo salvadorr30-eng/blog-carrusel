@@ -1,0 +1,17 @@
+Fix: añadir URLs de Lemon Squeezy a los tres libros
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# interactive rebase in progress; onto 938ec10
+# Last command done (1 command done):
+#    pick 75f4ae7 fix: añadir URLs de Lemon Squeezy a los tres libros
+# No commands remaining.
+# You are currently rebasing branch 'main' on '938ec10'.
+#
+# Changes to be committed:
+#	modified:   content/libros/a-grande-familia-dos-suricatos.mdx
+#	modified:   content/libros/la-gran-familia-de-los-suricatos.mdx
+#	modified:   content/libros/the-great-meerkat-family.mdx
+#	modified:   lib/shopify.ts
+#
