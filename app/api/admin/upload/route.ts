@@ -91,7 +91,7 @@ export async function POST(req: Request) {
         console.log(`[upload] Buffer creado, tamaño: ${buffer.length}`);
         
         const blobResult = await put(filename, buffer, {
-          access: 'private',
+          access: 'public',
           token: BLOB_READ_WRITE_TOKEN,
         });
         
