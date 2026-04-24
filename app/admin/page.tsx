@@ -1,10 +1,32 @@
+"use client";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getAllBooks } from "@/lib/content";
+import { useEffect, useState } from "react";
+
+interface Book {
+  slug: string;
+  title: string;
+  author: string;
+  genre: string;
+  publishedAt: string;
+  cover?: string;
+}
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const books = getAllBooks();
+  const [books, setBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/admin/libros-lista")
+      .then((r) => r.json())
+      .then(({ books }) => {
+        setBooks(books);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
   async function handleDelete(slug: string, title: string) {
     if (!confirm(`¿Eliminar "${title}"? Esta acción no se puede deshacer.`)) return;
@@ -16,12 +38,13 @@ export default function AdminDashboard() {
         alert(`Error: ${err.error || "No se pudo eliminar"}`);
         return;
       }
-      alert("Libro eliminado. Recarga la página para ver los cambios.");
-      router.refresh();
+      setBooks((prev) => prev.filter((b) => b.slug !== slug));
     } catch (e: any) {
       alert(`Error: ${e.message}`);
     }
   }
+
+  if (loading) return <div className="p-10 text-center text-ink/50">Cargando...</div>;
 
   return (
     <div className="space-y-10">
