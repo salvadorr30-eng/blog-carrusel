@@ -55,7 +55,7 @@ function buildBuyLinks(data: any): string {
   }
   const links: any[] = [];
   if (data.ebookUrl) links.push({ store: 'own', format: 'ebook', url: data.ebookUrl, label: 'Ebook — Mi tienda' });
-  if (data.printUrl) links.push({ store: data.printUrl.includes('amazon') ? 'amazon-es' : 'own', format: 'pdf', url: data.printUrl, label: 'PDF' });
+  if (data.printUrl) links.push({ store: data.printUrl.includes('amazon') ? 'amazon-es' : 'own', format: 'pdf', url: data.printUrl, label: 'Comprar PDF ⭐' });
   if (!links.length) return '';
   const block = links.map((l) =>
     `  - store: ${yamlStr(l.store)}\n    format: ${yamlStr(l.format)}\n    url: ${yamlStr(l.url)}\n    label: ${yamlStr(l.label)}`
