@@ -44,11 +44,7 @@ export default function RootLayout({
                   Blog
                 </Link>
               </li>
-              <li>
-                <Link href="/newsletter" className="text-ink/70 hover:text-accent transition">
-                  Newsletter
-                </Link>
-              </li>
+
               <li>
                 <a
                   href="https://carruseldeoportunidades.es"
@@ -97,11 +93,7 @@ export default function RootLayout({
                       Blog
                     </Link>
                   </li>
-                  <li>
-                    <Link href="/newsletter" className="hover:text-accent">
-                      Newsletter
-                    </Link>
-                  </li>
+
                   <li>
                     <Link href="/sobre-mi" className="hover:text-accent">
                       Sobre mí

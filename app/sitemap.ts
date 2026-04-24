@@ -1,10 +1,10 @@
-import type { MetadataRoute } from "next";
-import { getAllBooks, getAllPosts } from "@/lib/content";
+import type { MetadataRoute } from 'next';
+import { getAllBooks, getAllPosts } from '@/lib/content';
 
-const BASE_URL = "https://tu-dominio.com";
+const BASE_URL = 'https://tu-dominio.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/libros", "/blog", "/newsletter"].map((p) => ({
+  const staticRoutes = ['', '/libros', '/blog'].map((p) => ({
     url: `${BASE_URL}${p}`,
     lastModified: new Date()
   }));
