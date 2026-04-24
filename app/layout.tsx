@@ -153,10 +153,10 @@ export default function RootLayout({
                   </li>
                   <li>
                     <a
-                      href='mailto:ramirezhoyossalvador@carruseldeoportunidades.es'
+                      href='mailto:ramirezhoyossalvador@gmail.com'
                       className='hover:text-accent'
                     >
-                      info@carruseldeoportunidades.es
+                      ramirezhoyossalvador@gmail.com
                     </a>
                   </li>
                 </ul>
