@@ -70,26 +70,42 @@ export async function POST(req: Request) {
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
     const safeSlug = slug.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
     const filename = `${safeSlug}-${Date.now()}.${ext}`;
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+
+    console.log(`[upload] Archivo: ${file.name}, tamaño: ${fileSizeMB}MB, ext: ${ext}`);
 
     // PDFs grandes van a Vercel Blob
     if (ext === 'pdf' || file.size > 5 * 1024 * 1024) {
+      console.log(`[upload] Usando Vercel Blob para ${filename}`);
+      
       if (!BLOB_READ_WRITE_TOKEN) {
+        console.error('[upload] BLOB_READ_WRITE_TOKEN no está configurado');
         return NextResponse.json(
           { error: 'BLOB_READ_WRITE_TOKEN no configurado' },
           { status: 500 }
         );
       }
 
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const blobResult = await put(filename, buffer, {
-        access: 'public',
-        token: BLOB_READ_WRITE_TOKEN,
-      });
-
-      return NextResponse.json({ ok: true, path: blobResult.url });
+      try {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        console.log(`[upload] Buffer creado, tamaño: ${buffer.length}`);
+        
+        const blobResult = await put(filename, buffer, {
+          access: 'public',
+          token: BLOB_READ_WRITE_TOKEN,
+        });
+        
+        console.log(`[upload] Upload a Blob exitoso: ${blobResult.url}`);
+        return NextResponse.json({ ok: true, path: blobResult.url });
+      } catch (blobErr: any) {
+        console.error('[upload] Error en Vercel Blob:', blobErr);
+        throw new Error(`Vercel Blob error: ${blobErr.message}`);
+      }
     }
 
     // Imágenes pequeñas van a GitHub
+    console.log(`[upload] Usando GitHub para ${filename}`);
+    
     if (!GITHUB_TOKEN || !GITHUB_REPO) {
       return NextResponse.json(
         { error: 'Configuración del servidor incompleta (GITHUB_TOKEN / GITHUB_REPO)' },
