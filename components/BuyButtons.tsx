@@ -11,11 +11,11 @@ type Props = {
 };
 
 const FORMAT_LABELS: Record<BuyLink["format"], string> = {
-  paperback: "PDF",
+  paperback: "Comprar PDF",
   hardcover: "Tapa dura",
   kindle: "Kindle",
   epub: "EPUB",
-  pdf: "PDF"
+  pdf: "Comprar PDF"
 };
 
 const FORMAT_ORDER: BuyLink["format"][] = [
