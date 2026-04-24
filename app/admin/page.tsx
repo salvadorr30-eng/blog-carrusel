@@ -1,8 +1,27 @@
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getAllBooks } from "@/lib/content";
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const books = getAllBooks();
+
+  async function handleDelete(slug: string, title: string) {
+    if (!confirm(`¿Eliminar "${title}"? Esta acción no se puede deshacer.`)) return;
+    
+    try {
+      const res = await fetch(`/api/admin/libros/${slug}`, { method: "DELETE" });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        alert(`Error: ${err.error || "No se pudo eliminar"}`);
+        return;
+      }
+      alert("Libro eliminado. Recarga la página para ver los cambios.");
+      router.refresh();
+    } catch (e: any) {
+      alert(`Error: ${e.message}`);
+    }
+  }
 
   return (
     <div className="space-y-10">
@@ -52,6 +71,12 @@ export default function AdminDashboard() {
                 >
                   Ver
                 </Link>
+                <button
+                  onClick={() => handleDelete(book.slug, book.title)}
+                  className="px-3 py-1.5 border border-red-300 text-red-600 rounded-full hover:bg-red-50"
+                >
+                  Eliminar
+                </button>
               </div>
             </div>
           ))}

@@ -113,3 +113,30 @@ export async function PUT(req: Request, { params }: { params: { slug: string } }
 
   return NextResponse.json({ ok: true, slug: params.slug });
 }
+
+// DELETE — elimina el libro de GitHub
+export async function DELETE(_req: Request, { params }: { params: { slug: string } }) {
+  if (!GITHUB_TOKEN || !GITHUB_REPO)
+    return NextResponse.json({ error: "Configuración incompleta" }, { status: 500 });
+
+  const filePath = `content/libros/${params.slug}.mdx`;
+  const checkRes = await ghFetch(filePath);
+  if (!checkRes.ok) return NextResponse.json({ error: `Libro "${params.slug}" no encontrado` }, { status: 404 });
+  const { sha } = await checkRes.json();
+
+  const res = await fetch(
+    `https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+      body: JSON.stringify({ message: `feat(libros): eliminar "${params.slug}"`, branch: GITHUB_BRANCH, sha }),
+    }
+  );
+
+  if (!res.ok) {
+    const d = await res.json().catch(() => ({}));
+    return NextResponse.json({ error: `GitHub ${res.status}: ${d.message ?? JSON.stringify(d)}` }, { status: 500 });
+  }
+
+  return NextResponse.json({ ok: true, slug: params.slug });
+}
