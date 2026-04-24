@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
+import { put } from '@vercel/blob';
 
 const GITHUB_TOKEN  = process.env.GITHUB_TOKEN ?? '';
 const GITHUB_REPO   = process.env.GITHUB_REPO ?? '';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH ?? 'main';
+const BLOB_READ_TOKEN = process.env.BLOB_READ_WRITE_TOKEN ?? '';
 
+// Subir a GitHub (para imágenes pequeñas ≤5MB)
 async function commitImageToGitHub(
   filePath: string,
   base64Content: string,
@@ -56,13 +59,6 @@ async function commitImageToGitHub(
 
 export async function POST(req: Request) {
   try {
-    if (!GITHUB_TOKEN || !GITHUB_REPO) {
-      return NextResponse.json(
-        { error: 'Configuración del servidor incompleta (GITHUB_TOKEN / GITHUB_REPO)' },
-        { status: 500 }
-      );
-    }
-
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
     const slug = (formData.get('slug') as string) || 'portada';
@@ -71,12 +67,38 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Falta el archivo' }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const base64Content = buffer.toString('base64');
-
     const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
     const safeSlug = slug.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
     const filename = `${safeSlug}-${Date.now()}.${ext}`;
+
+    // PDFs grandes van a Vercel Blob
+    if (ext === 'pdf' || file.size > 5 * 1024 * 1024) {
+      if (!BLOB_READ_WRITE_TOKEN) {
+        return NextResponse.json(
+          { error: 'BLOB_READ_WRITE_TOKEN no configurado' },
+          { status: 500 }
+        );
+      }
+
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const blobResult = await put(filename, buffer, {
+        access: 'public',
+        token: BLOB_READ_WRITE_TOKEN,
+      });
+
+      return NextResponse.json({ ok: true, path: blobResult.url });
+    }
+
+    // Imágenes pequeñas van a GitHub
+    if (!GITHUB_TOKEN || !GITHUB_REPO) {
+      return NextResponse.json(
+        { error: 'Configuración del servidor incompleta (GITHUB_TOKEN / GITHUB_REPO)' },
+        { status: 500 }
+      );
+    }
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const base64Content = buffer.toString('base64');
     const filePath = `public/covers/${filename}`;
 
     await commitImageToGitHub(
