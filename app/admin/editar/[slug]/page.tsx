@@ -74,6 +74,8 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
   const [success, setSuccess] = useState(false);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
+  const [previewName, setPreviewName] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     title: "", subtitle: "", author: "", language: "", translationOf: "",
@@ -81,6 +83,7 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
     coverUrl: "", summary: "", synopsis: "", extract: "",
     metaTitle: "", metaDescription: "", keywords: "",
     ebookUrl: "", printUrl: "", priceEbook: "", pricePrint: "",
+    previewUrl: "",
   });
 
   useEffect(() => {
@@ -112,6 +115,7 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
           printUrl:        fm.printUrl || "",
           priceEbook:      fm.priceEbook ? String(fm.priceEbook) : "",
           pricePrint:      fm.pricePrint ? String(fm.pricePrint) : "",
+          previewUrl:      fm.previewUrl || "",
         });
       })
       .catch(() => setError("No se pudo cargar el libro"))
@@ -129,6 +133,17 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
     setCoverPreview(URL.createObjectURL(file));
   }
 
+  function handlePreviewFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      alert("Solo se permiten archivos PDF");
+      return;
+    }
+    setPreviewFile(file);
+    setPreviewName(file.name);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
@@ -137,6 +152,7 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
 
     try {
       let coverPath = form.coverUrl;
+      let previewPath = form.previewUrl;
 
       if (coverFile) {
         const fd = new FormData();
@@ -148,9 +164,20 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
         coverPath = path;
       }
 
+      if (previewFile) {
+        const fd = new FormData();
+        fd.append("file", previewFile);
+        fd.append("slug", `${slug}-preview`);
+        const upRes = await fetch("/api/admin/upload", { method: "POST", body: fd });
+        if (!upRes.ok) throw new Error("Fallo al subir el preview");
+        const { path } = await upRes.json();
+        previewPath = path;
+      }
+
       const payload = {
         ...form,
         cover: coverPath,
+        previewUrl: previewPath,
         pages: form.pages ? Number(form.pages) : undefined,
         priceEbook: form.priceEbook ? Number(form.priceEbook) : undefined,
         pricePrint: form.pricePrint ? Number(form.pricePrint) : undefined,
@@ -286,6 +313,19 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
               <input type="number" step="0.01" value={form.pricePrint} onChange={(e) => update("pricePrint", e.target.value)} className={inputCls} />
             </Field>
           </div>
+        </Section>
+
+        <Section title="Preview / Extracto">
+          <Field label="URL del preview (PDF)">
+            <input type="url" value={form.previewUrl} onChange={(e) => update("previewUrl", e.target.value)} className={inputCls} placeholder="https://..." />
+          </Field>
+          {form.previewUrl && !previewFile && (
+            <p className="text-xs text-ink/50">Preview actual: <a href={form.previewUrl} target="_blank" className="underline">{form.previewUrl}</a></p>
+          )}
+          <Field label="Subir nuevo PDF" hint="PDF para previsualización">
+            <input type="file" accept="application/pdf" onChange={handlePreviewFile} className="block text-sm" />
+            {previewName && <p className="text-xs text-green-600 mt-1">Archivo seleccionado: {previewName}</p>}
+          </Field>
         </Section>
 
         {error && (

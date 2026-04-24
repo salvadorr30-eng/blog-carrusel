@@ -89,6 +89,7 @@ export async function PUT(req: Request, { params }: { params: { slug: string } }
     ["ageRange", data.ageRange], ["pages", data.pages], ["isbn", data.isbn],
     ["publishedAt", data.publishedAt], ["metaTitle", data.metaTitle],
     ["metaDescription", data.metaDescription], ["keywords", data.keywords],
+    ["previewUrl", data.previewUrl],
   ];
 
   const fmLines = fmFields

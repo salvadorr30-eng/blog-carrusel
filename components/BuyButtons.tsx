@@ -115,7 +115,7 @@ export function BuyButtons({
           rel="noopener"
           className="block border-2 border-accent text-accent text-center py-3 rounded-full font-medium hover:bg-accent hover:text-white transition"
         >
-          Comprar impreso{pricePrint ? ` — ${pricePrint}€` : ""}
+          Comprar PDF{pricePrint ? ` — ${pricePrint}€` : ""}
         </a>
       )}
       {fallback && (
