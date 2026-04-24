@@ -11,7 +11,7 @@ type Props = {
 };
 
 const FORMAT_LABELS: Record<BuyLink["format"], string> = {
-  paperback: "Tapa blanda",
+  paperback: "PDF",
   hardcover: "Tapa dura",
   kindle: "Kindle",
   epub: "EPUB",
