@@ -22,7 +22,7 @@ export default function ContactoPage() {
             Soporte, información sobre productos, dudas sobre compras o cualquier otra consulta.
           </p>
           <a
-            href='mailto:info@carruseldeoportunidades.es'
+            href='mailto:ramirezhoyossalvador@carruseldeoportunidades.es'
             className='inline-flex items-center gap-2 bg-accent text-white px-6 py-3 rounded-full font-medium hover:bg-orange-600 transition'
           >
             info@carruseldeoportunidades.es
