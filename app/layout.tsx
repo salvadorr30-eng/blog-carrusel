@@ -147,19 +147,16 @@ export default function RootLayout({
                 <p className='font-bold text-ink mb-3'>Contacto</p>
                 <ul className='space-y-2'>
                   <li>
+                    <Link href='/contacto' className='hover:text-accent'>
+                      Formulario de contacto
+                    </Link>
+                  </li>
+                  <li>
                     <a
                       href='mailto:info@carruseldeoportunidades.es'
                       className='hover:text-accent'
                     >
                       info@carruseldeoportunidades.es
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href='mailto:legal@carruseldeoportunidades.es'
-                      className='hover:text-accent'
-                    >
-                      legal@carruseldeoportunidades.es
                     </a>
                   </li>
                 </ul>
