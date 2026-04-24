@@ -4,7 +4,7 @@ import { put } from '@vercel/blob';
 const GITHUB_TOKEN  = process.env.GITHUB_TOKEN ?? '';
 const GITHUB_REPO   = process.env.GITHUB_REPO ?? '';
 const GITHUB_BRANCH = process.env.GITHUB_BRANCH ?? 'main';
-const BLOB_READ_TOKEN = process.env.BLOB_READ_WRITE_TOKEN ?? '';
+const BLOB_READ_WRITE_TOKEN = process.env.BLOB_READ_WRITE_TOKEN ?? '';
 
 // Subir a GitHub (para imágenes pequeñas ≤5MB)
 async function commitImageToGitHub(
