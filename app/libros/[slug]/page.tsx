@@ -7,6 +7,8 @@ import { BookSchema } from '@/components/BookSchema';
 import { BuyButtons } from '@/components/BuyButtons';
 import remarkGfm from 'remark-gfm';
 
+export const revalidate = 60;
+
 export function generateStaticParams() {
   return getAllBooks().map((book) => ({ slug: book.slug }));
 }
@@ -61,6 +63,17 @@ export default function BookPage({ params }: { params: { slug: string } }) {
           priceEbook={book.priceEbook}
           pricePrint={book.pricePrint}
         />
+
+        {book.previewUrl && (
+          <a
+            href={book.previewUrl}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='block w-full text-center bg-violet text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition'
+          >
+            📖 Ver preview
+          </a>
+        )}
 
         <div className='text-sm text-ink/60 space-y-1 border-t border-ink/10 pt-4'>
           {book.ageRange && (

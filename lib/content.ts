@@ -40,6 +40,8 @@ export type Book = {
   metaTitle?: string;
   metaDescription?: string;
   keywords?: string[];
+  // Preview
+  previewUrl?: string;
   content: string;
 };
 
@@ -98,6 +100,7 @@ export function getAllBooks(): Book[] {
     metaTitle: data.metaTitle,
     metaDescription: data.metaDescription,
     keywords: data.keywords,
+    previewUrl: data.previewUrl,
     content
   })).sort(
     (a, b) =>
