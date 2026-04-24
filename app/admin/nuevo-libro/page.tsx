@@ -8,9 +8,9 @@ function slugify(text: string) {
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\\s-]/g, '')
+    .replace(/[^a-z0-9 ]/g, '')
     .trim()
-    .replace(/\\s+/g, '-')
+    .replace(/ +/g, '-')
     .slice(0, 80);
 }
 
@@ -46,6 +46,7 @@ export default function NuevoLibroPage() {
 
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
 
   function update<K extends keyof typeof form>(key: K, value: string) {
     setForm((f) => {
@@ -64,6 +65,12 @@ export default function NuevoLibroPage() {
     setCoverPreview(URL.createObjectURL(file));
   }
 
+  function handlePreviewFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPreviewFile(file);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
@@ -71,6 +78,7 @@ export default function NuevoLibroPage() {
 
     try {
       let coverPath = form.coverUrl;
+      let previewPath = form.previewUrl;
 
       if (coverFile) {
         const fd = new FormData();
@@ -85,10 +93,24 @@ export default function NuevoLibroPage() {
         coverPath = path;
       }
 
+      if (previewFile) {
+        const fd = new FormData();
+        fd.append('file', previewFile);
+        fd.append('slug', (form.slug || slugify(form.title)) + '-preview');
+        const upRes = await fetch('/api/admin/upload', {
+          method: 'POST',
+          body: fd
+        });
+        if (!upRes.ok) throw new Error('Fallo al subir la previsualización');
+        const { path } = await upRes.json();
+        previewPath = path;
+      }
+
       const payload = {
         ...form,
         slug: form.slug || slugify(form.title),
         cover: coverPath,
+        previewUrl: previewPath,
         pages: form.pages ? Number(form.pages) : undefined,
         priceEbook: form.priceEbook ? Number(form.priceEbook) : undefined,
         pricePrint: form.pricePrint ? Number(form.pricePrint) : undefined,
@@ -368,9 +390,23 @@ export default function NuevoLibroPage() {
           </div>
 
           <Field
-            label='URL de previsualización PDF'
-            hint='URL al PDF de muestra o preview del libro'
+            label='Previsualización PDF'
+            hint='Sube el PDF de muestra del libro (opcional)'
           >
+            <input
+              type='file'
+              accept='application/pdf'
+              onChange={handlePreviewFile}
+              className='block text-sm'
+            />
+            {previewFile && (
+              <p className='text-xs text-green-600 mt-1'>✓ {previewFile.name}</p>
+            )}
+          </Field>
+
+          <div className='text-center text-sm text-ink/40'>— o —</div>
+
+          <Field label='URL del PDF'>
             <input
               type='url'
               value={form.previewUrl}
