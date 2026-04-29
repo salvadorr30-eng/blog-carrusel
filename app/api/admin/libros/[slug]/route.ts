@@ -14,7 +14,6 @@ function toYaml(v: any): string {
   return yamlStr(String(v));
 }
 function buildBuyLinks(data: any): string {
-  // Si vienen buyLinks completos, usarlos directamente
   if (Array.isArray(data.buyLinks) && data.buyLinks.length > 0) {
     const block = data.buyLinks
       .map((l: any) =>
@@ -22,10 +21,10 @@ function buildBuyLinks(data: any): string {
       ).join("\n");
     return `buyLinks:\n${block}`;
   }
-  // Fallback: construir desde ebookUrl / printUrl
   const links: any[] = [];
   if (data.ebookUrl) links.push({ store: "own", format: "ebook", url: data.ebookUrl, label: "Ebook — Mi tienda" });
-  if (data.printUrl) links.push({ store: data.printUrl.includes("amazon") ? "amazon-es" : "own", format: "paperback", url: data.printUrl, label: "Impreso" });
+  if (data.amazonUrl) links.push({ store: "amazon-es", format: "paperback", url: data.amazonUrl, label: "Impreso — Amazon" });
+  else if (data.printUrl) links.push({ store: data.printUrl.includes("amazon") ? "amazon-es" : "own", format: "paperback", url: data.printUrl, label: "Impreso" });
   if (!links.length) return "";
   const block = links.map((l) =>
     `  - store: ${yamlStr(l.store)}\n    format: ${yamlStr(l.format)}\n    url: ${yamlStr(l.url)}\n    label: ${yamlStr(l.label)}`
@@ -33,15 +32,14 @@ function buildBuyLinks(data: any): string {
   return `buyLinks:\n${block}`;
 }
 
-async function ghFetch(filePath: string) {
-  const res = await fetch(
+async function ghGet(filePath: string) {
+  return fetch(
     `https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`,
     { headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, Accept: "application/vnd.github+json" }, cache: "no-store" }
   );
-  return res;
 }
 
-async function commitFile(filePath: string, content: string, message: string, sha: string) {
+async function ghPut(filePath: string, content: string, message: string, sha: string) {
   const res = await fetch(
     `https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`,
     {
@@ -56,12 +54,27 @@ async function commitFile(filePath: string, content: string, message: string, sh
   }
 }
 
+async function ghDelete(filePath: string, message: string, sha: string) {
+  const res = await fetch(
+    `https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+      body: JSON.stringify({ message, sha, branch: GITHUB_BRANCH }),
+    }
+  );
+  if (!res.ok) {
+    const d = await res.json().catch(() => ({}));
+    throw new Error(`GitHub ${res.status}: ${d.message ?? JSON.stringify(d)}`);
+  }
+}
+
 // GET — devuelve el MDX raw para precargar el formulario
 export async function GET(_req: Request, { params }: { params: { slug: string } }) {
   if (!GITHUB_TOKEN || !GITHUB_REPO)
     return NextResponse.json({ error: "Configuración incompleta" }, { status: 500 });
 
-  const res = await ghFetch(`content/libros/${params.slug}.mdx`);
+  const res = await ghGet(`content/libros/${params.slug}.mdx`);
   if (!res.ok) return NextResponse.json({ error: "Libro no encontrado" }, { status: 404 });
 
   const data = await res.json();
@@ -78,7 +91,7 @@ export async function PUT(req: Request, { params }: { params: { slug: string } }
   if (!data.title) return NextResponse.json({ error: "El título es obligatorio" }, { status: 400 });
 
   const filePath = `content/libros/${params.slug}.mdx`;
-  const checkRes = await ghFetch(filePath);
+  const checkRes = await ghGet(filePath);
   if (!checkRes.ok) return NextResponse.json({ error: `Libro "${params.slug}" no encontrado` }, { status: 404 });
   const { sha } = await checkRes.json();
 
@@ -89,7 +102,6 @@ export async function PUT(req: Request, { params }: { params: { slug: string } }
     ["ageRange", data.ageRange], ["pages", data.pages], ["isbn", data.isbn],
     ["publishedAt", data.publishedAt], ["metaTitle", data.metaTitle],
     ["metaDescription", data.metaDescription], ["keywords", data.keywords],
-    ["previewUrl", data.previewUrl],
   ];
 
   const fmLines = fmFields
@@ -107,7 +119,7 @@ export async function PUT(req: Request, { params }: { params: { slug: string } }
   const mdx = `---\n${frontmatter}\n---\n\n${body}`;
 
   try {
-    await commitFile(filePath, mdx, `fix(libros): actualizar "${data.title}"`, sha);
+    await ghPut(filePath, mdx, `fix(libros): actualizar "${data.title}"`, sha);
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
@@ -115,29 +127,21 @@ export async function PUT(req: Request, { params }: { params: { slug: string } }
   return NextResponse.json({ ok: true, slug: params.slug });
 }
 
-// DELETE — elimina el libro de GitHub
+// DELETE — elimina el MDX del repositorio
 export async function DELETE(_req: Request, { params }: { params: { slug: string } }) {
   if (!GITHUB_TOKEN || !GITHUB_REPO)
     return NextResponse.json({ error: "Configuración incompleta" }, { status: 500 });
 
   const filePath = `content/libros/${params.slug}.mdx`;
-  const checkRes = await ghFetch(filePath);
+  const checkRes = await ghGet(filePath);
   if (!checkRes.ok) return NextResponse.json({ error: `Libro "${params.slug}" no encontrado` }, { status: 404 });
   const { sha } = await checkRes.json();
 
-  const res = await fetch(
-    `https://api.github.com/repos/${GITHUB_REPO}/contents/${filePath}`,
-    {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${GITHUB_TOKEN}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
-      body: JSON.stringify({ message: `feat(libros): eliminar "${params.slug}"`, branch: GITHUB_BRANCH, sha }),
-    }
-  );
-
-  if (!res.ok) {
-    const d = await res.json().catch(() => ({}));
-    return NextResponse.json({ error: `GitHub ${res.status}: ${d.message ?? JSON.stringify(d)}` }, { status: 500 });
+  try {
+    await ghDelete(filePath, `chore(libros): eliminar "${params.slug}"`, sha);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, slug: params.slug });
+  return NextResponse.json({ ok: true });
 }
