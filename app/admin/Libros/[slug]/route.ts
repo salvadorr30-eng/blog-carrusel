@@ -22,10 +22,18 @@ function buildBuyLinks(data: any): string {
       ).join("\n");
     return `buyLinks:\n${block}`;
   }
-  // Fallback: construir desde ebookUrl / printUrl
+  // Construir desde los campos individuales
   const links: any[] = [];
   if (data.ebookUrl) links.push({ store: "own", format: "ebook", url: data.ebookUrl, label: "Ebook — Mi tienda" });
-  if (data.printUrl) links.push({ store: data.printUrl.includes("amazon") ? "amazon-es" : "own", format: "paperback", url: data.printUrl, label: "Impreso" });
+  if (data.printUrl) links.push({ store: "own", format: "pdf", url: data.printUrl, label: "Comprar PDF ⭐" });
+  if (data.amazonUrl) {
+    // Detectar si es amazon.com, amazon.es, amazon.co.uk, etc.
+    const url: string = data.amazonUrl;
+    const store = url.includes("amazon.co.uk") ? "amazon-uk"
+                : url.includes("amazon.com") ? "amazon-com"
+                : "amazon-es";
+    links.push({ store, format: "paperback", url, label: "Comprar libro impreso — Amazon" });
+  }
   if (!links.length) return "";
   const block = links.map((l) =>
     `  - store: ${yamlStr(l.store)}\n    format: ${yamlStr(l.format)}\n    url: ${yamlStr(l.url)}\n    label: ${yamlStr(l.label)}`

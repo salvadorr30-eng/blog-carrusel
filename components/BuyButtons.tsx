@@ -11,19 +11,21 @@ type Props = {
 };
 
 const FORMAT_LABELS: Record<BuyLink["format"], string> = {
-  paperback: "Comprar PDF",
+  ebook: "Ebook",
+  paperback: "Libro impreso",
   hardcover: "Tapa dura",
   kindle: "Kindle",
   epub: "EPUB",
-  pdf: "Comprar PDF"
+  pdf: "PDF"
 };
 
 const FORMAT_ORDER: BuyLink["format"][] = [
+  "ebook",
+  "pdf",
   "paperback",
   "hardcover",
   "kindle",
-  "epub",
-  "pdf"
+  "epub"
 ];
 
 const STORE_LABELS: Record<BuyLink["store"], string> = {
@@ -59,6 +61,7 @@ export function BuyButtons({
             <div className="space-y-1.5">
               {group.items.map((link, i) => {
                 const isFeatured = link.store === "own";
+                const isAmazon = link.store.startsWith("amazon");
                 return (
                   <a
                     key={i}
@@ -68,12 +71,14 @@ export function BuyButtons({
                     className={
                       isFeatured
                         ? "block bg-accent text-white px-4 py-2.5 rounded-lg font-medium hover:opacity-90 transition flex items-center justify-between"
+                        : isAmazon
+                        ? "block bg-[#FF9900] text-[#0F1111] px-4 py-2.5 rounded-lg font-semibold hover:bg-[#e88a00] transition flex items-center justify-between"
                         : "block border border-ink/20 px-4 py-2.5 rounded-lg hover:border-accent hover:bg-accent/5 transition flex items-center justify-between"
                     }
                   >
-                    <span className="text-sm">
+                    <span className="text-sm flex items-center gap-1.5">
+                      {isAmazon && <span>📦</span>}
                       {link.label || STORE_LABELS[link.store]}
-                      {isFeatured && " ⭐"}
                     </span>
                     {link.price && (
                       <span className="text-sm font-semibold">

@@ -82,7 +82,7 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
     isbn: "", pages: "", genre: "", ageRange: "", publishedAt: "",
     coverUrl: "", summary: "", synopsis: "", extract: "",
     metaTitle: "", metaDescription: "", keywords: "",
-    ebookUrl: "", printUrl: "", priceEbook: "", pricePrint: "",
+    ebookUrl: "", printUrl: "", amazonUrl: "", priceEbook: "", pricePrint: "",
     previewUrl: "",
   });
 
@@ -113,6 +113,9 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
           keywords:        Array.isArray(fm.keywords) ? fm.keywords.join(", ") : (fm.keywords || ""),
           ebookUrl:        fm.ebookUrl || "",
           printUrl:        fm.printUrl || "",
+          amazonUrl:       Array.isArray(fm.buyLinks)
+                             ? (fm.buyLinks.find((l: any) => l.store?.startsWith("amazon"))?.url || "")
+                             : "",
           priceEbook:      fm.priceEbook ? String(fm.priceEbook) : "",
           pricePrint:      fm.pricePrint ? String(fm.pricePrint) : "",
           previewUrl:      fm.previewUrl || "",
@@ -302,8 +305,11 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
           <Field label="URL ebook">
             <input type="text" value={form.ebookUrl} onChange={(e) => update("ebookUrl", e.target.value)} className={inputCls} placeholder="https://carruseldeoportunidades.lemonsqueezy.com/..." />
           </Field>
-          <Field label="URL impreso">
+          <Field label="URL impreso (tienda propia)">
             <input type="text" value={form.printUrl} onChange={(e) => update("printUrl", e.target.value)} className={inputCls} />
+          </Field>
+          <Field label="📦 URL libro impreso en Amazon KDP" hint="URL del producto en Amazon (paperback). Aparecerá con botón naranja en la ficha del libro.">
+            <input type="url" value={form.amazonUrl} onChange={(e) => update("amazonUrl", e.target.value)} className={inputCls} placeholder="https://www.amazon.es/dp/..." />
           </Field>
           <div className="grid grid-cols-2 gap-4">
             <Field label="Precio ebook (€)">

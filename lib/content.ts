@@ -9,7 +9,7 @@ const LEGAL_DIR = path.join(process.cwd(), "content", "legal");
 export type BuyLink = {
   label?: string;
   store: "amazon-es" | "amazon-com" | "amazon-uk" | "kobo" | "own" | "other";
-  format: "paperback" | "hardcover" | "kindle" | "epub" | "pdf";
+  format: "ebook" | "paperback" | "hardcover" | "kindle" | "epub" | "pdf";
   url: string;
   price?: number;
   currency?: string;

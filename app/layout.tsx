@@ -94,12 +94,6 @@ export default function RootLayout({
                       Blog
                     </Link>
                   </li>
-
-                  <li>
-                    <Link href='/sobre-mi' className='hover:text-accent'>
-                      Sobre mí
-                    </Link>
-                  </li>
                 </ul>
               </div>
 
@@ -153,10 +147,10 @@ export default function RootLayout({
                   </li>
                   <li>
                     <a
-                      href='mailto:ramirezhoyossalvador@gmail.com'
+                      href='mailto:info@carruseldeoportunidades.es'
                       className='hover:text-accent'
                     >
-                      ramirezhoyossalvador@gmail.com
+                      info@carruseldeoportunidades.es
                     </a>
                   </li>
                 </ul>
