@@ -45,7 +45,7 @@ export async function POST(req: Request) {
           Authorization: `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: "Carrusel de Oportunidades <noreply@send.carruseldeoportunidades.es>",
+          from: "Carrusel de Oportunidades <onboarding@resend.dev>",
           to: CONTACT_EMAIL,
           reply_to: email,
           subject: `Contacto web: ${name}`,
