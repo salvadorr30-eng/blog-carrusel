@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ObfuscatedEmail } from '@/components/ObfuscatedEmail';
 
 export const metadata: Metadata = {
   title: 'Contacto',
@@ -21,12 +22,7 @@ export default function ContactoPage() {
           <p className='text-ink/60 text-sm mb-3'>
             Soporte, información sobre productos, dudas sobre compras o cualquier otra consulta.
           </p>
-          <a
-            href='mailto:ramirezhoyossalvador@gmail.com'
-            className='inline-flex items-center gap-2 bg-accent text-white px-6 py-3 rounded-full font-medium hover:bg-orange-600 transition'
-          >
-            ramirezhoyossalvador@gmail.com
-          </a>
+          <ObfuscatedEmail className='inline-flex items-center gap-2 bg-accent text-white px-6 py-3 rounded-full font-medium hover:bg-orange-600 transition cursor-pointer' />
         </div>
 
         <div className='border-t border-ink/10 pt-6'>
