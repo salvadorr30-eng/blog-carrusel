@@ -111,8 +111,8 @@ export default function EditarLibroPage({ params }: { params: { slug: string } }
           metaTitle:       fm.metaTitle || "",
           metaDescription: fm.metaDescription || "",
           keywords:        Array.isArray(fm.keywords) ? fm.keywords.join(", ") : (fm.keywords || ""),
-          ebookUrl:        fm.ebookUrl || "",
-          printUrl:        fm.printUrl || "",
+          ebookUrl:        fm.ebookUrl || (Array.isArray(fm.buyLinks) ? (fm.buyLinks.find((l: any) => l.format === "ebook")?.url || "") : ""),
+          printUrl:        fm.printUrl || (Array.isArray(fm.buyLinks) ? (fm.buyLinks.find((l: any) => l.format === "pdf")?.url || "") : ""),
           amazonUrl:       Array.isArray(fm.buyLinks)
                              ? (fm.buyLinks.find((l: any) => l.store?.startsWith("amazon"))?.url || "")
                              : "",
