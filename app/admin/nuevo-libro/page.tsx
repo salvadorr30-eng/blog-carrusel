@@ -39,6 +39,7 @@ export default function NuevoLibroPage() {
     keywords: '',
     ebookUrl: '',
     printUrl: '',
+    amazonUrl: '',
     priceEbook: '',
     pricePrint: '',
     previewUrl: ''
@@ -356,15 +357,28 @@ export default function NuevoLibroPage() {
           </Field>
 
           <Field
-            label='URL impreso'
-            hint='URL completa del producto en tu tienda'
+            label='URL PDF (tu tienda)'
+            hint='URL del PDF en tu tienda LemonSqueezy'
           >
             <input
               type='text'
               value={form.printUrl}
               onChange={(e) => update('printUrl', e.target.value)}
               className={inputCls}
-              placeholder={`${SHOP_BASE}/products/...`}
+              placeholder='https://carruseldeoportunidades.lemonsqueezy.com/...'
+            />
+          </Field>
+
+          <Field
+            label='URL libro impreso (Amazon)'
+            hint='URL del libro en papel en Amazon (opcional)'
+          >
+            <input
+              type='url'
+              value={form.amazonUrl}
+              onChange={(e) => update('amazonUrl', e.target.value)}
+              className={inputCls}
+              placeholder='https://www.amazon.es/dp/...'
             />
           </Field>
 
