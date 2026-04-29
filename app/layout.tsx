@@ -31,8 +31,9 @@ export default function RootLayout({
       <body className='min-h-screen flex flex-col'>
         <header className='border-b border-ink/5 bg-white/80 backdrop-blur-sm sticky top-0 z-50'>
           <nav className='max-w-5xl mx-auto px-6 py-4 flex items-center justify-between'>
-            <Link href='/' className='font-serif text-xl font-bold text-gradient'>
-              🎠 Carrusel de Oportunidades
+            <Link href='/' className='flex items-center'>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src='/Logo.png' alt='Carrusel de Oportunidades' className='h-14 w-auto' />
             </Link>
             <ul className='flex gap-6 text-sm font-medium items-center'>
               <li>
