@@ -23,8 +23,14 @@ function buildBuyLinks(data: any): string {
   }
   const links: any[] = [];
   if (data.ebookUrl) links.push({ store: "own", format: "ebook", url: data.ebookUrl, label: "Ebook — Mi tienda" });
-  if (data.amazonUrl) links.push({ store: "amazon-es", format: "paperback", url: data.amazonUrl, label: "Impreso — Amazon" });
-  else if (data.printUrl) links.push({ store: data.printUrl.includes("amazon") ? "amazon-es" : "own", format: "paperback", url: data.printUrl, label: "Impreso" });
+  if (data.printUrl) links.push({ store: "own", format: "pdf", url: data.printUrl, label: "Comprar PDF ⭐" });
+  if (data.amazonUrl) {
+    const url: string = data.amazonUrl;
+    const store = url.includes("amazon.co.uk") ? "amazon-uk"
+                : url.includes("amazon.com") ? "amazon-com"
+                : "amazon-es";
+    links.push({ store, format: "paperback", url, label: "Comprar libro impreso — Amazon" });
+  }
   if (!links.length) return "";
   const block = links.map((l) =>
     `  - store: ${yamlStr(l.store)}\n    format: ${yamlStr(l.format)}\n    url: ${yamlStr(l.url)}\n    label: ${yamlStr(l.label)}`
@@ -102,6 +108,7 @@ export async function PUT(req: Request, { params }: { params: { slug: string } }
     ["ageRange", data.ageRange], ["pages", data.pages], ["isbn", data.isbn],
     ["publishedAt", data.publishedAt], ["metaTitle", data.metaTitle],
     ["metaDescription", data.metaDescription], ["keywords", data.keywords],
+    ["previewUrl", data.previewUrl],
   ];
 
   const fmLines = fmFields
