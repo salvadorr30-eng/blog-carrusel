@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getAllBooks, getAllPosts } from '@/lib/content';
 
-const BASE_URL = 'https://tu-dominio.com';
+const BASE_URL = 'https://carruseldeoportunidades.es';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = ['', '/libros', '/blog', '/contacto'].map((p) => ({
