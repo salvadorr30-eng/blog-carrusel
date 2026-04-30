@@ -19,13 +19,13 @@ export default function LibrosPage() {
             href={`/libros/${book.slug}`}
             className="flex gap-5 group"
           >
-            <div className="w-32 aspect-[2/3] bg-ink/5 rounded overflow-hidden flex-shrink-0">
+            <div className="w-32 flex-shrink-0">
               {book.cover && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={book.cover}
                   alt={`Portada de ${book.title}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition"
+                  className="w-full h-auto rounded shadow group-hover:scale-105 transition"
                 />
               )}
             </div>
