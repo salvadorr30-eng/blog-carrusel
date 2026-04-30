@@ -18,7 +18,13 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image'
   },
-  metadataBase: new URL('https://carruseldeoportunidades.es')
+  metadataBase: new URL('https://carruseldeoportunidades.es'),
+  verification: {
+    google: 'kRLFCg83XuY87kSoUaGaEf3Qx10HBCY0B5-i2LQHAxo',
+    other: {
+      'p:domain_verify': '1049916bd03e517d45a71c92336d4863'
+    }
+  }
 };
 
 export default function RootLayout({
