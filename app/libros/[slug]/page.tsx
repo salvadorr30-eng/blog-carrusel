@@ -27,8 +27,20 @@ export async function generateMetadata({
     openGraph: {
       title: book.metaTitle || book.title,
       description: book.metaDescription || book.summary,
-      images: book.cover ? [book.cover] : [],
-      type: 'book'
+      images: book.cover ? [{
+        url: book.cover.startsWith('http') ? book.cover : `https://carruseldeoportunidades.es${book.cover}`,
+        width: 800,
+        height: 1200,
+        alt: book.title,
+      }] : [],
+      type: 'book',
+      url: `https://carruseldeoportunidades.es/libros/${book.slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: book.metaTitle || book.title,
+      description: book.metaDescription || book.summary,
+      images: book.cover ? [book.cover.startsWith('http') ? book.cover : `https://carruseldeoportunidades.es${book.cover}`] : [],
     }
   };
 }
