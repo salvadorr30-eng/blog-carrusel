@@ -83,7 +83,7 @@ export default function BookPage({ params }: { params: { slug: string } }) {
             rel='noopener noreferrer'
             className='block w-full text-center bg-violet text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition'
           >
-            📖 Ver Principio del PDF
+            📖 {book.previewLabel || 'Ver Principio del PDF'}
           </a>
         )}
 
